@@ -8,19 +8,24 @@
   function pressureScore() {
     return Math.max(0, Math.min(100, Math.floor(state.heat + (state.districts || []).length * 3 + totalBuilt() - ((state.hq && state.hq.legal) || 0) * 4 - level('privateSecurity') * 2 - level('mediaCompany') * 3)));
   }
+  function smoothCash() {
+    if (!Number.isFinite(state.cash) || state.cash < 0) state.cash = 0;
+    if (state.cash > 999999999) state.cash = 999999999;
+  }
   function applyPressure() {
-    const growth = ((state.districts || []).length * 0.015) + totalBuilt() * 0.003 + level('nightClub') * 0.002 + level('importWarehouse') * 0.003 - (((state.hq && state.hq.legal) || 0) * 0.01) - level('privateSecurity') * 0.004 - level('mediaCompany') * 0.005;
+    const growth = ((state.districts || []).length * 0.012) + totalBuilt() * 0.002 + level('nightClub') * 0.0015 + level('importWarehouse') * 0.002 - (((state.hq && state.hq.legal) || 0) * 0.01) - level('privateSecurity') * 0.004 - level('mediaCompany') * 0.005;
     state.heat = Math.max(0, Math.min(100, state.heat + growth));
-    const bonusRespect = level('luxuryHotel') * 0.02 + level('mediaCompany') * 0.01;
+    const bonusRespect = level('luxuryHotel') * 0.015 + level('mediaCompany') * 0.008;
     if (bonusRespect > 0) state.respect += bonusRespect;
     if (pressureScore() >= 100) {
-      const amount = Math.min(state.cash, Math.max(100, Math.floor(state.cash * 0.12 + rawIncome() * 12)));
+      const amount = Math.min(state.cash, Math.max(100, Math.floor(state.cash * 0.04 + rawIncome() * 4)));
       state.cash -= amount;
-      state.respect = Math.max(0, state.respect - 10);
-      state.heat = 45;
-      log('City pressure hit 100%. You paid a penalty. Upgrade Legal Team or use Lay Low.');
+      state.respect = Math.max(0, state.respect - 5);
+      state.heat = 55;
+      log('City pressure hit 100%. You paid a smaller penalty. Upgrade Legal Team or use Lay Low.');
       save(false);
     }
+    smoothCash();
   }
   const oldPower = power;
   power = function (s = state) {
@@ -28,7 +33,7 @@
   };
   const oldIncomeBonus = incomeBonus;
   incomeBonus = function (s = state) {
-    return oldIncomeBonus(s) + level('tower') * 0.03;
+    return oldIncomeBonus(s) + level('tower') * 0.02;
   };
   const oldRenderList = renderList;
   renderList = function (el, defs, type) {
@@ -50,6 +55,34 @@
     oldShowModal(title, html);
     const dangerButton = document.getElementById('resetButton');
     if (dangerButton) dangerButton.style.display = 'none';
+  };
+  const oldOpenChest = openChest;
+  openChest = function () {
+    const before = state.cash;
+    oldOpenChest();
+    const gained = state.cash - before;
+    const cap = Math.max(1500, Math.floor(rawIncome() * 35 + 5000));
+    if (gained > cap) {
+      state.cash = before + cap;
+      log('Chest reward capped for smoother balance: +' + fmt(cap) + '.');
+      save(false);
+    }
+    smoothCash();
+    render();
+  };
+  const oldClaimDaily = claimDaily;
+  claimDaily = function () {
+    const before = state.cash;
+    oldClaimDaily();
+    const gained = state.cash - before;
+    const cap = Math.max(500, Math.floor(rawIncome() * 25 + 3000));
+    if (gained > cap) {
+      state.cash = before + cap;
+      log('Daily reward capped for smoother balance: +' + fmt(cap) + '.');
+      save(false);
+    }
+    smoothCash();
+    render();
   };
   function stableMissionPercent(text, currentPercent) {
     state.bestMissionProgress = state.bestMissionProgress || {};
@@ -74,6 +107,7 @@
   };
   const oldRender = render;
   render = function () {
+    smoothCash();
     oldRender();
     const next = document.getElementById('nextMoveText');
     if (next && pressureScore() > 75) next.textContent = 'Pressure is high. Use Lay Low, Legal Team, Private Security, or Media Company.';
