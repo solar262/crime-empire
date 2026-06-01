@@ -51,6 +51,27 @@
     const dangerButton = document.getElementById('resetButton');
     if (dangerButton) dangerButton.style.display = 'none';
   };
+  function stableMissionPercent(text, currentPercent) {
+    state.bestMissionProgress = state.bestMissionProgress || {};
+    const key = (state.missionIndex || 0) + ':' + text;
+    const previous = state.bestMissionProgress[key] || 0;
+    const best = Math.max(previous, currentPercent);
+    state.bestMissionProgress[key] = best;
+    return best;
+  }
+  const oldRenderMission = renderMission;
+  renderMission = function () {
+    oldRenderMission();
+    const textEl = document.getElementById('missionText');
+    const bar = document.getElementById('missionBar');
+    if (!textEl || !bar) return;
+    const match = textEl.textContent.match(/\((\d+)%\)/);
+    if (!match) return;
+    const current = Number(match[1]);
+    const stable = stableMissionPercent(textEl.textContent.replace(/\s*\(\d+%\)/, ''), current);
+    textEl.textContent = textEl.textContent.replace(/\(\d+%\)/, '(' + stable + '%)');
+    bar.style.width = stable + '%';
+  };
   const oldRender = render;
   render = function () {
     oldRender();
