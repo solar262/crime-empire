@@ -4,91 +4,129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crime Empire</title>
+  <meta name="description" content="A browser-based idle strategy crime empire game prototype." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
     <header class="hero">
       <div>
-        <p class="eyebrow">Idle strategy prototype</p>
+        <p class="eyebrow">Fictional idle strategy</p>
         <h1>Crime Empire</h1>
-        <p class="subtitle">Build fronts, recruit your crew, control districts, and climb the city rankings.</p>
+        <p class="subtitle">Start with one block. Build fronts, recruit a crew, run jobs, manage heat, and take over the city.</p>
       </div>
       <div class="rank-card">
         <span>Boss Rank</span>
         <strong id="rankName">Rookie</strong>
+        <small id="nextRank">Next rank loading...</small>
       </div>
     </header>
 
     <section class="stats-grid">
-      <div class="stat-card">
-        <span>Cash</span>
-        <strong id="cash">$0</strong>
-      </div>
-      <div class="stat-card">
-        <span>Income / sec</span>
-        <strong id="income">$0</strong>
-      </div>
-      <div class="stat-card">
-        <span>Crew Power</span>
-        <strong id="power">0</strong>
-      </div>
-      <div class="stat-card">
-        <span>Districts</span>
-        <strong id="districtCount">0/12</strong>
-      </div>
+      <div class="stat-card"><span>Cash</span><strong id="cash">$0</strong></div>
+      <div class="stat-card"><span>Income / sec</span><strong id="income">$0/s</strong></div>
+      <div class="stat-card"><span>Crew Power</span><strong id="power">0</strong></div>
+      <div class="stat-card"><span>Respect</span><strong id="respect">0</strong></div>
+      <div class="stat-card"><span>Heat</span><strong id="heat">0%</strong></div>
+      <div class="stat-card"><span>Energy</span><strong id="energy">10/10</strong></div>
+      <div class="stat-card"><span>Districts</span><strong id="districtCount">0/15</strong></div>
+      <div class="stat-card"><span>Net Worth</span><strong id="netWorth">$0</strong></div>
     </section>
 
-    <main class="game-grid">
-      <section class="panel main-action">
-        <h2>Street Hustle</h2>
-        <p>Tap to collect quick cash. Upgrade your empire to earn while offline.</p>
-        <button id="tapButton" class="big-button">Collect Tribute</button>
-        <div class="mini-row">
-          <button id="boostButton" class="secondary-button">2x Boost: 60s</button>
-          <button id="saveButton" class="secondary-button">Save</button>
+    <nav class="tab-bar" aria-label="Game sections">
+      <button class="tab-button active" data-tab="overview">Overview</button>
+      <button class="tab-button" data-tab="jobs">Jobs</button>
+      <button class="tab-button" data-tab="empire">Empire</button>
+      <button class="tab-button" data-tab="crewTab">Crew</button>
+      <button class="tab-button" data-tab="map">Map</button>
+      <button class="tab-button" data-tab="goals">Goals</button>
+    </nav>
+
+    <main>
+      <section id="overview" class="tab-panel active">
+        <div class="game-grid">
+          <section class="panel main-action">
+            <h2>Street Hustle</h2>
+            <p>Tap for quick cash. Your businesses earn automatically every second and while you are away.</p>
+            <button id="tapButton" class="big-button">Collect Tribute</button>
+            <div class="mini-row">
+              <button id="boostButton" class="secondary-button">2x Income Boost</button>
+              <button id="layLowButton" class="secondary-button">Lay Low</button>
+              <button id="saveButton" class="secondary-button">Save</button>
+            </div>
+            <p id="eventLog" class="event-log">Welcome to the city. Start small. Think bigger.</p>
+          </section>
+
+          <section class="panel">
+            <div class="section-head">
+              <h2>City Status</h2>
+              <span>Live summary</span>
+            </div>
+            <div class="status-list">
+              <div><span>Current objective</span><strong id="objectiveText">Collect your first $50</strong></div>
+              <div><span>Rival threat</span><strong id="rivalPower">25</strong></div>
+              <div><span>Owned fronts</span><strong id="frontCount">0</strong></div>
+              <div><span>Achievements</span><strong id="achievementCount">0/10</strong></div>
+            </div>
+            <button id="fightButton" class="danger-button">Challenge Rival Crew</button>
+          </section>
         </div>
-        <p id="eventLog" class="event-log">Welcome to the city. Start small. Think bigger.</p>
       </section>
 
-      <section class="panel">
-        <div class="section-head">
-          <h2>Front Businesses</h2>
-          <span>Upgrade income</span>
-        </div>
-        <div id="businesses" class="card-list"></div>
+      <section id="jobs" class="tab-panel">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Jobs</h2>
+            <span>Use energy, gain cash and respect, raise heat</span>
+          </div>
+          <div id="jobsList" class="card-list"></div>
+        </section>
       </section>
 
-      <section class="panel">
-        <div class="section-head">
-          <h2>Crew</h2>
-          <span>Build power</span>
-        </div>
-        <div id="crew" class="card-list"></div>
+      <section id="empire" class="tab-panel">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Front Businesses</h2>
+            <span>Upgrade income</span>
+          </div>
+          <div id="businesses" class="card-list"></div>
+        </section>
       </section>
 
-      <section class="panel">
-        <div class="section-head">
-          <h2>Territory Map</h2>
-          <span>Take blocks</span>
-        </div>
-        <div id="districts" class="district-grid"></div>
+      <section id="crewTab" class="tab-panel">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Crew</h2>
+            <span>Build power and unlock harder zones</span>
+          </div>
+          <div id="crew" class="card-list"></div>
+        </section>
       </section>
 
-      <section class="panel rival-panel">
-        <h2>Rival Fight</h2>
-        <p>Challenge a rival crew. Winning gives cash and respect. Losing costs nothing in this prototype.</p>
-        <div class="rival-box">
-          <span>Rival Power</span>
-          <strong id="rivalPower">25</strong>
-        </div>
-        <button id="fightButton" class="danger-button">Fight Rival</button>
+      <section id="map" class="tab-panel">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Territory Map</h2>
+            <span>Take districts to increase rank and bonuses</span>
+          </div>
+          <div id="districts" class="district-grid"></div>
+        </section>
+      </section>
+
+      <section id="goals" class="tab-panel">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Goals & Achievements</h2>
+            <span>Prototype progression</span>
+          </div>
+          <div id="achievements" class="achievement-grid"></div>
+        </section>
       </section>
     </main>
 
     <footer>
       <button id="resetButton" class="text-button">Reset progress</button>
-      <p>Prototype v0.1 — fictional, stylized idle strategy game.</p>
+      <p>Prototype v0.2 — fictional strategy game. Built with root files only for GitHub Pages.</p>
     </footer>
   </div>
   <script src="game.js"></script>
