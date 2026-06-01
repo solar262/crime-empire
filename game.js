@@ -1,303 +1,122 @@
-const money = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0
-});
+const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
 const defaultState = {
   cash: 0,
+  respect: 0,
+  heat: 0,
+  energy: 10,
+  maxEnergy: 10,
   boostUntil: 0,
   lastSave: Date.now(),
-  businesses: {
-    cornerShop: 0,
-    nightClub: 0,
-    autoGarage: 0,
-    privateSecurity: 0
-  },
-  crew: {
-    lookout: 0,
-    driver: 0,
-    fixer: 0,
-    lieutenant: 0
-  },
-  districts: []
+  businesses: { cornerShop: 0, nightClub: 0, autoGarage: 0, privateSecurity: 0, importWarehouse: 0, luxuryHotel: 0 },
+  crew: { lookout: 0, driver: 0, fixer: 0, lieutenant: 0, strategist: 0, captain: 0 },
+  districts: [],
+  achievements: []
 };
 
-const businessDefs = [
-  { id: 'cornerShop', name: 'Corner Shop', baseCost: 25, income: 1, text: 'Small front. Fast early cash.' },
-  { id: 'nightClub', name: 'Night Club', baseCost: 175, income: 9, text: 'Popular spot with bigger nightly income.' },
-  { id: 'autoGarage', name: 'Auto Garage', baseCost: 950, income: 42, text: 'Moves parts, cars, and favors.' },
-  { id: 'privateSecurity', name: 'Private Security', baseCost: 4200, income: 165, text: 'High-end operation with steady contracts.' }
+const businesses = [
+  ['cornerShop', 'Corner Shop', 25, 1, 'Small front. Fast early cash.'],
+  ['nightClub', 'Night Club', 175, 9, 'Popular spot with bigger nightly income.'],
+  ['autoGarage', 'Auto Garage', 950, 42, 'Moves cars, parts, and favors.'],
+  ['privateSecurity', 'Private Security', 4200, 165, 'Contracts, protection, and influence.'],
+  ['importWarehouse', 'Import Warehouse', 18000, 640, 'Big logistics. Bigger profits.'],
+  ['luxuryHotel', 'Luxury Hotel', 75000, 2400, 'A city landmark with elite cash flow.']
+].map(([id, name, baseCost, income, text]) => ({ id, name, baseCost, income, text }));
+
+const crew = [
+  ['lookout', 'Lookout', 60, 3, 'Keeps the crew one step ahead.'],
+  ['driver', 'Driver', 240, 11, 'Fast wheels. Faster exits.'],
+  ['fixer', 'Fixer', 1050, 46, 'Solves expensive problems quietly.'],
+  ['lieutenant', 'Lieutenant', 5200, 190, 'Runs blocks while you expand.'],
+  ['strategist', 'Strategist', 21000, 760, 'Plans jobs and reduces bad odds.'],
+  ['captain', 'Captain', 90000, 3000, 'Commands entire districts.']
+].map(([id, name, baseCost, power, text]) => ({ id, name, baseCost, power, text }));
+
+const jobs = [
+  { id: 'street', name: 'Street Collection', energy: 1, cash: 35, respect: 2, heat: 2, power: 0, text: 'Low risk job for early money.' },
+  { id: 'club', name: 'Club Negotiation', energy: 2, cash: 160, respect: 8, heat: 5, power: 12, text: 'Needs a small crew presence.' },
+  { id: 'garage', name: 'Garage Takeover', energy: 3, cash: 620, respect: 24, heat: 9, power: 55, text: 'A stronger move for midgame growth.' },
+  { id: 'dock', name: 'Dockyard Deal', energy: 4, cash: 2400, respect: 70, heat: 14, power: 180, text: 'Big payday. Big attention.' },
+  { id: 'casino', name: 'Casino Night', energy: 5, cash: 9000, respect: 210, heat: 22, power: 650, text: 'High stakes city power play.' }
 ];
 
-const crewDefs = [
-  { id: 'lookout', name: 'Lookout', baseCost: 60, power: 3, text: 'Keeps the crew one step ahead.' },
-  { id: 'driver', name: 'Driver', baseCost: 240, power: 11, text: 'Fast wheels. Faster escapes.' },
-  { id: 'fixer', name: 'Fixer', baseCost: 1050, power: 46, text: 'Solves expensive problems quietly.' },
-  { id: 'lieutenant', name: 'Lieutenant', baseCost: 5200, power: 190, text: 'Runs blocks while you expand.' }
+const districtNames = ['Old Docks','Market Row','West Blocks','Neon Mile','Harbor Point','Iron Yard','Gold Avenue','Uptown','Casino Strip','Royal Park','Diamond Pier','City Hall','Airport Road','The Heights','Crown Island'];
+const ranks = [
+  ['Rookie', 0, 0], ['Enforcer', 20, 50], ['Operator', 75, 200], ['Shot Caller', 200, 700], ['Boss', 700, 2500], ['Kingpin', 2500, 9000], ['City Legend', 9000, 25000]
+];
+const achievementDefs = [
+  ['firstCash','First Cash','Reach $100 cash', s => s.cash >= 100],
+  ['firstFront','Open For Business','Buy any front business', s => totalFronts(s) >= 1],
+  ['crewUp','Crew Formed','Hire 5 total crew members', s => totalCrew(s) >= 5],
+  ['firstJob','Job Runner','Earn 25 respect', s => s.respect >= 25],
+  ['firstDistrict','Block Owner','Control your first district', s => s.districts.length >= 1],
+  ['income100','Real Income','Reach $100 per second', s => rawIncome(s) >= 100],
+  ['power500','Heavy Crew','Reach 500 crew power', s => power(s) >= 500],
+  ['fiveDistricts','City Presence','Control 5 districts', s => s.districts.length >= 5],
+  ['respect1000','Known Name','Reach 1,000 respect', s => s.respect >= 1000],
+  ['legend','Endgame Boss','Reach Kingpin rank', s => rankName(s) === 'Kingpin' || rankName(s) === 'City Legend']
 ];
 
-const districtNames = [
-  'Old Docks', 'Market Row', 'West Blocks', 'Neon Mile',
-  'Harbor Point', 'Iron Yard', 'Gold Avenue', 'Uptown',
-  'Casino Strip', 'Royal Park', 'Diamond Pier', 'City Hall'
-];
+let state = load();
 
-let state = loadState();
-
-function loadState() {
-  const saved = localStorage.getItem('crimeEmpireSave');
-  if (!saved) return structuredClone(defaultState);
-  try {
-    const parsed = JSON.parse(saved);
-    return { ...structuredClone(defaultState), ...parsed };
-  } catch {
-    return structuredClone(defaultState);
-  }
+function cloneDefault(){ return JSON.parse(JSON.stringify(defaultState)); }
+function load(){
+  try { return { ...cloneDefault(), ...(JSON.parse(localStorage.getItem('crimeEmpireSaveV2')) || {}) }; }
+  catch { return cloneDefault(); }
 }
+function save(show = true){ state.lastSave = Date.now(); localStorage.setItem('crimeEmpireSaveV2', JSON.stringify(state)); if(show) log('Progress saved.'); }
+function fmt(v){ return money.format(Math.floor(v)); }
+function totalFronts(s = state){ return Object.values(s.businesses).reduce((a,b)=>a+b,0); }
+function totalCrew(s = state){ return Object.values(s.crew).reduce((a,b)=>a+b,0); }
+function boost(){ return Date.now() < state.boostUntil ? 2 : 1; }
+function rawIncome(s = state){ return businesses.reduce((sum,b)=>sum + (s.businesses[b.id] || 0) * b.income, 0) * (1 + s.districts.length * 0.04); }
+function income(){ return rawIncome() * boost(); }
+function power(s = state){ return crew.reduce((sum,c)=>sum + (s.crew[c.id] || 0) * c.power, 0) + s.districts.length * 18 + Math.floor(s.respect / 20); }
+function netWorth(){ return state.cash + rawIncome() * 120 + power() * 18 + state.respect * 4; }
+function cost(base, level, growth){ return Math.floor(base * Math.pow(growth, level)); }
+function businessCost(b){ return cost(b.baseCost, state.businesses[b.id] || 0, 1.18); }
+function crewCost(c){ return cost(c.baseCost, state.crew[c.id] || 0, 1.2); }
+function tapValue(){ return 1 + Math.floor(rawIncome() / 5) + state.districts.length + Math.floor(state.respect / 100); }
+function rivalPower(){ return 25 + state.districts.length * 35 + Math.floor(rawIncome() * .65) + Math.floor(state.heat * 2); }
+function districtCost(i){ return 350 + i * 520 + Math.floor(i*i*110); }
+function districtPower(i){ return 12 + i * 28; }
+function rankName(s = state){ let r = ranks[0][0]; for(const [name, needPower, needRespect] of ranks){ if(power(s) >= needPower && s.respect >= needRespect) r = name; } return r; }
+function nextRankText(){ const current = rankName(); const next = ranks.find(r => r[0] !== current && (power() < r[1] || state.respect < r[2])); return next ? `Next: ${next[0]} · ${next[1]} power · ${next[2]} respect` : 'Max rank reached'; }
+function log(msg){ document.getElementById('eventLog').textContent = msg; }
 
-function saveState(showMessage = true) {
-  state.lastSave = Date.now();
-  localStorage.setItem('crimeEmpireSave', JSON.stringify(state));
-  if (showMessage) log('Progress saved. The city remembers.');
-}
-
-function formatCash(value) {
-  return money.format(Math.floor(value));
-}
-
-function getBusinessCost(def) {
-  return Math.floor(def.baseCost * Math.pow(1.18, state.businesses[def.id]));
-}
-
-function getCrewCost(def) {
-  return Math.floor(def.baseCost * Math.pow(1.2, state.crew[def.id]));
-}
-
-function getIncomePerSecond() {
-  const base = businessDefs.reduce((sum, def) => sum + state.businesses[def.id] * def.income, 0);
-  return base * getBoostMultiplier();
-}
-
-function getRawIncomePerSecond() {
-  return businessDefs.reduce((sum, def) => sum + state.businesses[def.id] * def.income, 0);
-}
-
-function getBoostMultiplier() {
-  return Date.now() < state.boostUntil ? 2 : 1;
-}
-
-function getPower() {
-  const crewPower = crewDefs.reduce((sum, def) => sum + state.crew[def.id] * def.power, 0);
-  const districtBonus = state.districts.length * 12;
-  return crewPower + districtBonus;
-}
-
-function getTapValue() {
-  return 1 + Math.floor(getRawIncomePerSecond() / 5) + state.districts.length;
-}
-
-function getRivalPower() {
-  return 25 + state.districts.length * 32 + Math.floor(getRawIncomePerSecond() * 0.7);
-}
-
-function getDistrictCost(index) {
-  return 350 + index * 420 + Math.floor(Math.pow(index, 2) * 80);
-}
-
-function getDistrictPower(index) {
-  return 12 + index * 18;
-}
-
-function buyBusiness(id) {
-  const def = businessDefs.find(item => item.id === id);
-  const cost = getBusinessCost(def);
-  if (state.cash < cost) return log('Not enough cash for that upgrade.');
-  state.cash -= cost;
-  state.businesses[id] += 1;
-  log(`${def.name} upgraded. Income is growing.`);
+function buyBusiness(id){ const b = businesses.find(x=>x.id===id), c = businessCost(b); if(state.cash < c) return log('Need more cash for that front.'); state.cash -= c; state.businesses[id]++; state.respect += 1; log(`${b.name} upgraded.`); render(); }
+function hire(id){ const c = crew.find(x=>x.id===id), price = crewCost(c); if(state.cash < price) return log('Need more cash to hire.'); state.cash -= price; state.crew[id]++; state.respect += 2; log(`${c.name} joined the crew.`); render(); }
+function runJob(id){
+  const j = jobs.find(x=>x.id===id); if(state.energy < j.energy) return log('Not enough energy. Wait for it to refill.'); if(power() < j.power) return log('Crew power too low for that job.');
+  state.energy -= j.energy; const heatRisk = Math.max(0, state.heat - power()/120); const success = Math.random()*100 > heatRisk * .35;
+  if(success){ const payout = j.cash + Math.floor(rawIncome()*8); state.cash += payout; state.respect += j.respect; state.heat = Math.min(100, state.heat + j.heat); log(`${j.name} succeeded: +${fmt(payout)}, +${j.respect} respect.`); }
+  else { state.respect += Math.ceil(j.respect/4); state.heat = Math.min(100, state.heat + j.heat + 8); log(`${j.name} got messy. Small respect gain, heat rose.`); }
   render();
 }
+function takeDistrict(i){ if(state.districts.includes(i)) return; if(state.cash < districtCost(i)) return log('Need more cash for that district.'); if(power() < districtPower(i)) return log('Crew power too low for that district.'); state.cash -= districtCost(i); state.districts.push(i); state.respect += 30 + i*10; log(`${districtNames[i]} is yours.`); render(); }
+function fight(){ const r = rivalPower(); if(power() + Math.random()*80 >= r){ const prize = 150 + r*5; state.cash += prize; state.respect += 18; state.heat = Math.min(100, state.heat+6); log(`Rival crew beaten. +${fmt(prize)} and +18 respect.`); } else { state.respect += 4; state.heat = Math.min(100, state.heat+3); log('Rival crew pushed back. Gain +4 respect.'); } render(); }
+function layLow(){ const price = Math.max(50, Math.floor(rawIncome()*20)); if(state.cash < price) return log(`Need ${fmt(price)} to lay low.`); state.cash -= price; state.heat = Math.max(0, state.heat - 25); log(`Heat reduced. Cost: ${fmt(price)}.`); render(); }
+function activateBoost(){ if(Date.now() < state.boostUntil) return; state.boostUntil = Date.now() + 60000; log('Income doubled for 60 seconds.'); render(); }
 
-function hireCrew(id) {
-  const def = crewDefs.find(item => item.id === id);
-  const cost = getCrewCost(def);
-  if (state.cash < cost) return log('Not enough cash to hire that crew member.');
-  state.cash -= cost;
-  state.crew[id] += 1;
-  log(`${def.name} joined your crew.`);
-  render();
+function renderList(el, defs, type){
+  const root = document.getElementById(el); root.innerHTML = '';
+  defs.forEach(d => { const isBiz = type==='business'; const level = isBiz ? state.businesses[d.id] : state.crew[d.id]; const price = isBiz ? businessCost(d) : crewCost(d); const gain = isBiz ? `+${fmt(d.income)}/sec each` : `+${d.power} power each`; const card = document.createElement('div'); card.className='item-card'; card.innerHTML=`<div><h3>${d.name} · Lv ${level}</h3><p>${d.text}</p><small>${gain}</small></div><button ${state.cash < price ? 'disabled':''}>${fmt(price)}</button>`; card.querySelector('button').onclick = () => isBiz ? buyBusiness(d.id) : hire(d.id); root.appendChild(card); });
 }
-
-function buyDistrict(index) {
-  const cost = getDistrictCost(index);
-  const requiredPower = getDistrictPower(index);
-  if (state.districts.includes(index)) return;
-  if (state.cash < cost) return log('You need more cash to move on that block.');
-  if (getPower() < requiredPower) return log('Your crew is not strong enough for that district yet.');
-  state.cash -= cost;
-  state.districts.push(index);
-  log(`${districtNames[index]} is now under your control.`);
-  render();
+function renderJobs(){ const root = document.getElementById('jobsList'); root.innerHTML=''; jobs.forEach(j=>{ const card=document.createElement('div'); card.className='item-card job-card'; card.innerHTML=`<div><h3>${j.name}</h3><p>${j.text}</p><small>Energy ${j.energy} · ${fmt(j.cash)}+ · ${j.respect} respect · ${j.power} power needed · +${j.heat}% heat</small></div><button ${state.energy < j.energy || power() < j.power ? 'disabled':''}>Run Job</button>`; card.querySelector('button').onclick=()=>runJob(j.id); root.appendChild(card); }); }
+function renderDistricts(){ const root=document.getElementById('districts'); root.innerHTML=''; districtNames.forEach((name,i)=>{ const owned=state.districts.includes(i); const card=document.createElement('div'); card.className=`district ${owned?'owned':''}`; card.innerHTML= owned ? `<strong>${name}</strong><span>Controlled · +4% income bonus</span>` : `<strong>${name}</strong><span>${fmt(districtCost(i))} · ${districtPower(i)} power</span><button ${state.cash<districtCost(i)||power()<districtPower(i)?'disabled':''}>Take District</button>`; const btn=card.querySelector('button'); if(btn) btn.onclick=()=>takeDistrict(i); root.appendChild(card); }); }
+function renderAchievements(){ const root=document.getElementById('achievements'); root.innerHTML=''; achievementDefs.forEach(([id,name,text,check])=>{ const done=check(state); if(done && !state.achievements.includes(id)){ state.achievements.push(id); state.cash += 100; } const card=document.createElement('div'); card.className=`achievement ${done?'done':''}`; card.innerHTML=`<strong>${done?'✓ ':''}${name}</strong><span>${text}${done?' · Reward claimed':''}</span>`; root.appendChild(card); }); }
+function objective(){ if(state.cash < 50) return 'Collect your first $50'; if(totalFronts() < 1) return 'Buy your first front'; if(totalCrew() < 3) return 'Hire 3 crew members'; if(state.respect < 50) return 'Run jobs to reach 50 respect'; if(state.districts.length < 1) return 'Take your first district'; if(rawIncome() < 100) return 'Reach $100/sec income'; return 'Expand across the whole city'; }
+function render(){
+  document.getElementById('cash').textContent=fmt(state.cash); document.getElementById('income').textContent=`${fmt(income())}/s`; document.getElementById('power').textContent=power().toLocaleString(); document.getElementById('respect').textContent=Math.floor(state.respect).toLocaleString(); document.getElementById('heat').textContent=`${Math.floor(state.heat)}%`; document.getElementById('energy').textContent=`${Math.floor(state.energy)}/${state.maxEnergy}`; document.getElementById('districtCount').textContent=`${state.districts.length}/${districtNames.length}`; document.getElementById('netWorth').textContent=fmt(netWorth()); document.getElementById('rankName').textContent=rankName(); document.getElementById('nextRank').textContent=nextRankText(); document.getElementById('objectiveText').textContent=objective(); document.getElementById('rivalPower').textContent=rivalPower().toLocaleString(); document.getElementById('frontCount').textContent=totalFronts().toLocaleString(); document.getElementById('achievementCount').textContent=`${state.achievements.length}/${achievementDefs.length}`;
+  const bb=document.getElementById('boostButton'); if(Date.now()<state.boostUntil){bb.textContent=`2x Active: ${Math.ceil((state.boostUntil-Date.now())/1000)}s`;bb.disabled=true}else{bb.textContent='2x Income Boost';bb.disabled=false}
+  renderList('businesses', businesses, 'business'); renderList('crew', crew, 'crew'); renderJobs(); renderDistricts(); renderAchievements();
 }
+function offline(){ const elapsed=Math.min(7200,Math.floor((Date.now()-state.lastSave)/1000)); const earned=elapsed*rawIncome(); const energyGain=Math.floor(elapsed/20); if(earned>0){state.cash+=earned;log(`Away earnings: ${fmt(earned)}.`)} state.energy=Math.min(state.maxEnergy,state.energy+energyGain); state.lastSave=Date.now(); }
 
-function fightRival() {
-  const rival = getRivalPower();
-  const power = getPower();
-  const roll = Math.random() * 40;
-  if (power + roll >= rival) {
-    const prize = 120 + rival * 4 + state.districts.length * 75;
-    state.cash += prize;
-    log(`Victory. Your crew won ${formatCash(prize)}.`);
-  } else {
-    const consolation = 15 + Math.floor(power / 3);
-    state.cash += consolation;
-    log(`The rival crew held the block. You still earned ${formatCash(consolation)} in respect.`);
-  }
-  render();
-}
+document.querySelectorAll('.tab-button').forEach(btn=>btn.onclick=()=>{ document.querySelectorAll('.tab-button,.tab-panel').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); });
+document.getElementById('tapButton').onclick=()=>{ const v=tapValue(); state.cash+=v; log(`Collected ${fmt(v)}.`); render(); };
+document.getElementById('fightButton').onclick=fight; document.getElementById('boostButton').onclick=activateBoost; document.getElementById('layLowButton').onclick=layLow; document.getElementById('saveButton').onclick=()=>save(true); document.getElementById('resetButton').onclick=()=>{ if(confirm('Reset progress?')){ localStorage.removeItem('crimeEmpireSaveV2'); state=cloneDefault(); log('Progress reset.'); render(); } };
 
-function activateBoost() {
-  if (Date.now() < state.boostUntil) return log('Boost is already active.');
-  state.boostUntil = Date.now() + 60_000;
-  log('Boost activated: income doubled for 60 seconds.');
-  render();
-}
-
-function getRankName() {
-  const power = getPower();
-  const income = getRawIncomePerSecond();
-  if (power > 900 && income > 600) return 'Kingpin';
-  if (power > 420 && income > 250) return 'Boss';
-  if (power > 160 && income > 90) return 'Shot Caller';
-  if (power > 55 && income > 25) return 'Operator';
-  if (power > 15) return 'Enforcer';
-  return 'Rookie';
-}
-
-function log(message) {
-  document.getElementById('eventLog').textContent = message;
-}
-
-function renderBusinesses() {
-  const wrap = document.getElementById('businesses');
-  wrap.innerHTML = '';
-  for (const def of businessDefs) {
-    const level = state.businesses[def.id];
-    const cost = getBusinessCost(def);
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.innerHTML = `
-      <div>
-        <h3>${def.name} · Lv ${level}</h3>
-        <p>${def.text} +${formatCash(def.income)}/sec each</p>
-      </div>
-      <button ${state.cash < cost ? 'disabled' : ''}>${formatCash(cost)}</button>
-    `;
-    card.querySelector('button').addEventListener('click', () => buyBusiness(def.id));
-    wrap.appendChild(card);
-  }
-}
-
-function renderCrew() {
-  const wrap = document.getElementById('crew');
-  wrap.innerHTML = '';
-  for (const def of crewDefs) {
-    const count = state.crew[def.id];
-    const cost = getCrewCost(def);
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.innerHTML = `
-      <div>
-        <h3>${def.name} · ${count}</h3>
-        <p>${def.text} +${def.power} power each</p>
-      </div>
-      <button ${state.cash < cost ? 'disabled' : ''}>${formatCash(cost)}</button>
-    `;
-    card.querySelector('button').addEventListener('click', () => hireCrew(def.id));
-    wrap.appendChild(card);
-  }
-}
-
-function renderDistricts() {
-  const wrap = document.getElementById('districts');
-  wrap.innerHTML = '';
-  districtNames.forEach((name, index) => {
-    const owned = state.districts.includes(index);
-    const cost = getDistrictCost(index);
-    const requiredPower = getDistrictPower(index);
-    const card = document.createElement('div');
-    card.className = `district ${owned ? 'owned' : ''}`;
-    card.innerHTML = owned ? `
-      <strong>${name}</strong>
-      <span>Controlled</span>
-    ` : `
-      <strong>${name}</strong>
-      <span>${formatCash(cost)} · ${requiredPower} power</span>
-      <button ${state.cash < cost || getPower() < requiredPower ? 'disabled' : ''}>Take</button>
-    `;
-    const button = card.querySelector('button');
-    if (button) button.addEventListener('click', () => buyDistrict(index));
-    wrap.appendChild(card);
-  });
-}
-
-function render() {
-  document.getElementById('cash').textContent = formatCash(state.cash);
-  document.getElementById('income').textContent = `${formatCash(getIncomePerSecond())}/s`;
-  document.getElementById('power').textContent = getPower().toLocaleString();
-  document.getElementById('districtCount').textContent = `${state.districts.length}/12`;
-  document.getElementById('rankName').textContent = getRankName();
-  document.getElementById('rivalPower').textContent = getRivalPower().toLocaleString();
-
-  const boostButton = document.getElementById('boostButton');
-  if (Date.now() < state.boostUntil) {
-    const seconds = Math.ceil((state.boostUntil - Date.now()) / 1000);
-    boostButton.textContent = `2x Boost Active: ${seconds}s`;
-    boostButton.disabled = true;
-  } else {
-    boostButton.textContent = '2x Boost: 60s';
-    boostButton.disabled = false;
-  }
-
-  renderBusinesses();
-  renderCrew();
-  renderDistricts();
-}
-
-function applyOfflineEarnings() {
-  const now = Date.now();
-  const elapsedSeconds = Math.min(7200, Math.max(0, Math.floor((now - state.lastSave) / 1000)));
-  const earned = elapsedSeconds * getRawIncomePerSecond();
-  if (earned > 0) {
-    state.cash += earned;
-    log(`Welcome back. Your empire earned ${formatCash(earned)} while you were away.`);
-  }
-  state.lastSave = now;
-}
-
-document.getElementById('tapButton').addEventListener('click', () => {
-  const amount = getTapValue();
-  state.cash += amount;
-  log(`Collected ${formatCash(amount)} in tribute.`);
-  render();
-});
-
-document.getElementById('fightButton').addEventListener('click', fightRival);
-document.getElementById('boostButton').addEventListener('click', activateBoost);
-document.getElementById('saveButton').addEventListener('click', () => saveState(true));
-document.getElementById('resetButton').addEventListener('click', () => {
-  if (!confirm('Reset your Crime Empire progress?')) return;
-  localStorage.removeItem('crimeEmpireSave');
-  state = structuredClone(defaultState);
-  log('Progress reset. Back to the streets.');
-  render();
-});
-
-applyOfflineEarnings();
-render();
-setInterval(() => {
-  state.cash += getIncomePerSecond();
-  render();
-}, 1000);
-setInterval(() => saveState(false), 15000);
+offline(); render();
+setInterval(()=>{ state.cash += income(); state.heat=Math.max(0,state.heat-.03); state.energy=Math.min(state.maxEnergy,state.energy+0.05); render(); },1000);
+setInterval(()=>save(false),15000);
