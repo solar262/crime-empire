@@ -4,112 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Crime Empire</title>
-  <meta name="description" content="A mobile-first idle strategy crime empire game." />
+  <meta name="description" content="A mobile-first idle strategy empire game." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="floatLayer" class="float-layer"></div>
-
   <div class="phone-shell">
-    <header class="top-hud">
-      <div class="brand-block">
-        <span class="eyebrow">Crime Empire</span>
-        <strong id="rankName">Rookie</strong>
-      </div>
-      <button id="dailyButton" class="daily-chip">🎁 Daily</button>
-    </header>
-
-    <section class="resource-bar">
-      <div><span>Cash</span><strong id="cash">$0</strong></div>
-      <div><span>Power</span><strong id="power">0</strong></div>
-      <div><span>Energy</span><strong id="energy">10/10</strong></div>
-      <div><span>Heat</span><strong id="heat">0%</strong></div>
-    </section>
-
+    <header class="top-hud"><div class="brand-block"><span class="eyebrow">Crime Empire</span><strong id="rankName">Rookie</strong></div><button id="dailyButton" class="daily-chip">Daily</button></header>
+    <section class="resource-bar"><div><span>Cash</span><strong id="cash">$0</strong></div><div><span>Power</span><strong id="power">0</strong></div><div><span>Energy</span><strong id="energy">10/10</strong></div><div><span>Heat</span><strong id="heat">0%</strong></div></section>
     <main class="screen">
       <section id="home" class="view active">
-        <div class="city-card">
-          <div class="city-skyline" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-          <div class="boss-panel">
-            <div class="boss-avatar">🕶️</div>
-            <div>
-              <p>Current Objective</p>
-              <h2 id="objectiveText">Collect your first $50</h2>
-              <small id="nextRank">Next rank loading...</small>
-            </div>
-          </div>
-          <div class="progress-strip">
-            <div><span>Respect</span><strong id="respect">0</strong></div>
-            <div><span>Income</span><strong id="income">$0/s</strong></div>
-            <div><span>Districts</span><strong id="districtCount">0/15</strong></div>
-          </div>
-        </div>
-
-        <button id="tapButton" class="main-action-button">💵 Collect Tribute</button>
-
-        <div class="quick-actions">
-          <button id="boostButton">⚡ 2x Boost</button>
-          <button id="fightButton">🥊 Rival</button>
-          <button id="layLowButton">🧊 Lay Low</button>
-        </div>
-
-        <section class="event-card">
-          <div><strong>City Event</strong><span id="cityEvent">The city is quiet. Build your base.</span></div>
-        </section>
-
+        <div class="city-card"><div class="city-skyline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="boss-panel"><div class="boss-avatar">Boss</div><div><p>Current Objective</p><h2 id="objectiveText">Collect your first $50</h2><small id="nextRank">Next rank loading...</small></div></div><div class="progress-strip"><div><span>Respect</span><strong id="respect">0</strong></div><div><span>Income</span><strong id="income">$0/s</strong></div><div><span>Districts</span><strong id="districtCount">0/15</strong></div></div></div>
+        <button id="tapButton" class="main-action-button">Collect Tribute</button>
+        <div class="quick-actions"><button id="boostButton">2x Boost</button><button id="fightButton">Rival</button><button id="layLowButton">Lay Low</button></div>
+        <section class="event-card"><div><strong>Power Guide</strong><span>Hire crew, take districts, gain respect, and upgrade HQ Training to get stronger.</span></div></section>
+        <section class="event-card"><div><strong>City Event</strong><span id="cityEvent">The city is quiet. Build your base.</span></div></section>
         <p id="eventLog" class="event-log">Welcome to the city. Start small. Think bigger.</p>
       </section>
-
-      <section id="jobs" class="view">
-        <div class="view-head"><h2>Jobs</h2><span>Earn cash and respect</span></div>
-        <div id="jobsList" class="card-list"></div>
-      </section>
-
-      <section id="empire" class="view">
-        <div class="view-head"><h2>Empire</h2><span>Businesses make money</span></div>
-        <div id="businesses" class="card-list"></div>
-      </section>
-
-      <section id="crewTab" class="view">
-        <div class="view-head"><h2>Crew</h2><span>Power unlocks the city</span></div>
-        <div id="crew" class="crew-grid"></div>
-      </section>
-
-      <section id="map" class="view">
-        <div class="view-head"><h2>City Map</h2><span>Take districts</span></div>
-        <div id="districts" class="district-grid"></div>
-      </section>
-
-      <section id="hq" class="view">
-        <div class="view-head"><h2>HQ</h2><span>Permanent upgrades</span></div>
-        <div id="hqList" class="card-list"></div>
-      </section>
+      <section id="jobs" class="view"><div class="view-head"><h2>Jobs</h2><span>Earn cash and respect</span></div><div id="jobsList" class="card-list"></div></section>
+      <section id="empire" class="view"><div class="view-head"><h2>Empire</h2><span>Businesses make money</span></div><div id="businesses" class="card-list"></div></section>
+      <section id="crewTab" class="view"><div class="view-head"><h2>Crew</h2><span>Power unlocks the city</span></div><div id="crew" class="crew-grid"></div></section>
+      <section id="map" class="view"><div class="view-head"><h2>City Map</h2><span>Take districts</span></div><div id="districts" class="district-grid"></div></section>
+      <section id="hq" class="view"><div class="view-head"><h2>HQ</h2><span>Permanent upgrades</span></div><div id="hqList" class="card-list"></div></section>
     </main>
-
-    <nav class="bottom-nav" aria-label="Main navigation">
-      <button class="nav-button active" data-tab="home"><span>🏙️</span>Home</button>
-      <button class="nav-button" data-tab="jobs"><span>🎯</span>Jobs</button>
-      <button class="nav-button" data-tab="empire"><span>🏪</span>Empire</button>
-      <button class="nav-button" data-tab="crewTab"><span>🧑‍🤝‍🧑</span>Crew</button>
-      <button class="nav-button" data-tab="map"><span>🗺️</span>Map</button>
-      <button class="nav-button" data-tab="hq"><span>🏢</span>HQ</button>
-    </nav>
+    <nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="jobs"><span>Job</span>Jobs</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="hq"><span>HQ</span>HQ</button></nav>
   </div>
-
-  <button id="tutorialButton" class="help-fab">?</button>
-  <button id="saveButton" class="save-fab">💾</button>
-
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <button id="closeModal" class="modal-close">×</button>
-      <h2 id="modalTitle">How to Play</h2>
-      <div id="modalBody"></div>
-      <button id="resetButton" class="reset-button">Reset progress</button>
-    </div>
-  </div>
-
+  <button id="tutorialButton" class="help-fab">?</button><button id="saveButton" class="save-fab">Save</button>
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
   <script src="game.js"></script>
 </body>
 </html>
