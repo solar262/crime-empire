@@ -24,17 +24,19 @@
         <p id="eventLog" class="event-log">Welcome to the city. Start small. Think bigger.</p>
       </section>
       <section id="arena" class="view"><div class="view-head"><h2>Arena</h2><span>Beat rival bosses</span></div><div class="arena-card"><div class="boss-face" id="bossFace">Boss</div><div><strong id="bossName">Street Captain</strong><span id="bossStats">Power 25 · Reward $500</span></div><div class="mission-progress"><span id="bossHpBar"></span></div><button id="bossAttackButton">Attack Boss</button></div><p id="battleLog" class="event-log">Build power, then challenge the boss.</p></section>
+      <section id="factions" class="view"><div class="view-head"><h2>Factions</h2><span>Control city influence</span></div><div id="factionList" class="card-list"></div></section>
       <section id="jobs" class="view"><div class="view-head"><h2>Jobs</h2><span>Earn cash and respect</span></div><div id="jobsList" class="card-list"></div></section>
       <section id="empire" class="view"><div class="view-head"><h2>Empire</h2><span>Businesses make money</span></div><div id="businesses" class="card-list"></div></section>
       <section id="crewTab" class="view"><div class="view-head"><h2>Crew</h2><span>Power unlocks the city</span></div><div id="crew" class="crew-grid"></div></section>
       <section id="map" class="view"><div class="view-head"><h2>City Map</h2><span>Take districts</span></div><div id="districts" class="district-grid"></div></section>
       <section id="hq" class="view"><div class="view-head"><h2>HQ</h2><span>Permanent upgrades</span></div><div id="hqList" class="card-list"></div></section>
     </main>
-    <nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="arena"><span>Fight</span>Arena</button><button class="nav-button" data-tab="jobs"><span>Job</span>Jobs</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="hq"><span>HQ</span>HQ</button></nav>
+    <nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="arena"><span>Fight</span>Arena</button><button class="nav-button" data-tab="factions"><span>War</span>Factions</button><button class="nav-button" data-tab="jobs"><span>Job</span>Jobs</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="hq"><span>HQ</span>HQ</button></nav>
   </div>
   <button id="tutorialButton" class="help-fab">?</button><button id="saveButton" class="save-fab">Save</button>
   <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
   <script src="game.js"></script>
   <script src="balance.js"></script>
+  <script src="factions.js"></script>
 </body>
 </html>
