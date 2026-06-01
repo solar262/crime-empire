@@ -6,23 +6,25 @@
     return (state.businesses && state.businesses[id]) || 0;
   }
   function pressureScore() {
-    return Math.max(0, Math.min(100, Math.floor(state.heat + (state.districts || []).length * 3 + totalBuilt() - ((state.hq && state.hq.legal) || 0) * 4 - level('privateSecurity') * 2 - level('mediaCompany') * 3)));
+    return Math.max(0, Math.min(100, Math.floor(state.heat + (state.districts || []).length * 2 + totalBuilt() * 0.5 - ((state.hq && state.hq.legal) || 0) * 6 - level('privateSecurity') * 4 - level('mediaCompany') * 5)));
   }
   function smoothCash() {
     if (!Number.isFinite(state.cash) || state.cash < 0) state.cash = 0;
     if (state.cash > 999999999) state.cash = 999999999;
   }
   function applyPressure() {
-    const growth = ((state.districts || []).length * 0.012) + totalBuilt() * 0.002 + level('nightClub') * 0.0015 + level('importWarehouse') * 0.002 - (((state.hq && state.hq.legal) || 0) * 0.01) - level('privateSecurity') * 0.004 - level('mediaCompany') * 0.005;
+    const growth = ((state.districts || []).length * 0.004) + totalBuilt() * 0.0008 + level('nightClub') * 0.0008 + level('importWarehouse') * 0.001 - (((state.hq && state.hq.legal) || 0) * 0.012) - level('privateSecurity') * 0.006 - level('mediaCompany') * 0.007;
     state.heat = Math.max(0, Math.min(100, state.heat + growth));
     const bonusRespect = level('luxuryHotel') * 0.015 + level('mediaCompany') * 0.008;
     if (bonusRespect > 0) state.respect += bonusRespect;
-    if (pressureScore() >= 100) {
-      const amount = Math.min(state.cash, Math.max(100, Math.floor(state.cash * 0.04 + rawIncome() * 4)));
+    state.lastPressurePenalty = state.lastPressurePenalty || 0;
+    if (pressureScore() >= 100 && Date.now() - state.lastPressurePenalty > 120000) {
+      const amount = Math.min(state.cash, Math.max(50, Math.floor(state.cash * 0.01 + rawIncome() * 1.5)));
       state.cash -= amount;
-      state.respect = Math.max(0, state.respect - 5);
-      state.heat = 55;
-      log('City pressure hit 100%. You paid a smaller penalty. Upgrade Legal Team or use Lay Low.');
+      state.respect = Math.max(0, state.respect - 2);
+      state.heat = 65;
+      state.lastPressurePenalty = Date.now();
+      log('City pressure caused a small penalty. Use Lay Low, Legal Team, Private Security, or Media Company.');
       save(false);
     }
     smoothCash();
