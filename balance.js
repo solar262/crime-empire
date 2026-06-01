@@ -42,8 +42,14 @@
     [...root.querySelectorAll('.item-card')].forEach((card, index) => {
       const def = defs[index];
       const small = card.querySelector('small');
-      if (small && notes[def.id]) small.textContent += ' · ' + notes[def.id];
+      if (small && notes[def.id] && !small.textContent.includes(notes[def.id])) small.textContent += ' · ' + notes[def.id];
     });
+  };
+  const oldShowModal = showModal;
+  showModal = function (title, html) {
+    oldShowModal(title, html);
+    const dangerButton = document.getElementById('resetButton');
+    if (dangerButton) dangerButton.style.display = 'none';
   };
   const oldRender = render;
   render = function () {
