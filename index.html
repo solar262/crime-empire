@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
   <title>Crime Empire: Neon Districts</title>
   <link rel="stylesheet" href="neon-game.css" />
 </head>
@@ -19,16 +19,20 @@
 
     <div id="mission">
       <strong>MAIN MISSION</strong>
-      <p>Survive the neon district and collect cash.</p>
+      <p id="missionText">Survive the neon district and collect cash.</p>
+      <small>Shift / Dash button = burst move. Space / Fire = auto-target pulse.</small>
     </div>
+
+    <canvas id="miniMap" width="180" height="180"></canvas>
+    <div id="toast" class="hidden">Wave cleared</div>
 
     <div id="startScreen" class="overlay">
       <div class="panel">
         <p class="kicker">CRIME EMPIRE</p>
         <h1>NEON DISTRICTS</h1>
-        <p>Move through the city, collect cash, dodge rivals, survive waves, and build your empire.</p>
+        <p>Move through the city, collect cash, survive rival waves, use dash, and build your empire.</p>
         <button id="startBtn">PLAY</button>
-        <small>Desktop: WASD / Arrow keys. Mobile: touch controls.</small>
+        <small>Desktop: WASD / Arrows move. Space fires. Shift dashes. Mobile: touch controls.</small>
       </div>
     </div>
 
@@ -46,6 +50,7 @@
       <button id="fireBtn">FIRE</button>
       <button id="rightBtn">▶</button>
       <button id="downBtn">▼</button>
+      <button id="dashBtn">DASH</button>
     </div>
   </div>
 
