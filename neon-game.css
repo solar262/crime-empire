@@ -40,6 +40,7 @@ canvas {
   padding: 10px;
   color: white;
   backdrop-filter: blur(10px);
+  box-shadow: 0 0 25px rgba(0,0,0,0.45);
 }
 
 #hud span {
@@ -50,7 +51,7 @@ canvas {
 }
 
 #hud b {
-  font-size: 20px;
+  font-size: 22px;
   color: #ffd15c;
 }
 
@@ -59,13 +60,47 @@ canvas {
   top: 100px;
   left: 20px;
   z-index: 10;
-  width: 320px;
+  width: 340px;
   background: rgba(8,12,22,0.82);
   border: 1px solid rgba(255,209,92,0.25);
   border-radius: 20px;
-  padding: 16px;
+  padding: 18px;
   color: white;
   backdrop-filter: blur(12px);
+  box-shadow: 0 0 30px rgba(255,160,40,0.12);
+}
+
+#mission strong {
+  display:block;
+  margin-bottom:10px;
+}
+
+#miniMap {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 180px;
+  height: 180px;
+  z-index: 11;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(4,8,18,0.72);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+
+#toast {
+  position: fixed;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: linear-gradient(135deg,#ffe28a,#ff9d1c);
+  color: #1a1102;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-weight: 900;
+  box-shadow: 0 0 35px rgba(255,190,40,0.5);
 }
 
 .overlay {
@@ -78,7 +113,7 @@ canvas {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .panel {
@@ -139,14 +174,15 @@ canvas {
   left: 50%;
   transform: translateX(-50%);
   display: none;
-  grid-template-columns: repeat(3,70px);
+  grid-template-columns: repeat(3,72px);
   gap: 10px;
   z-index: 12;
 }
 
 #controls button {
-  height: 60px;
-  font-size: 16px;
+  height: 62px;
+  font-size: 15px;
+  box-shadow: 0 0 20px rgba(255,170,40,0.35);
 }
 
 @media(max-width:900px) {
@@ -157,6 +193,12 @@ canvas {
   #mission {
     width: calc(100vw - 40px);
     top: 150px;
+  }
+
+  #miniMap {
+    width: 120px;
+    height: 120px;
+    bottom: 110px;
   }
 
   #controls {
