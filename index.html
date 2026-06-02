@@ -6,92 +6,41 @@
   <title>Crime Empire — Idle Strategy Game</title>
   <meta name="description" content="Build your fictional empire, recruit crew, take districts, fight rival bosses, and climb from rookie to city legend in this mobile and desktop idle strategy game." />
   <meta name="theme-color" content="#070911" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta property="og:title" content="Crime Empire" />
-  <meta property="og:description" content="Build your empire. Control the city. Become the boss." />
-  <meta property="og:type" content="website" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="premium.css" />
+  <link rel="stylesheet" href="arcade.css" />
 </head>
 <body>
-  <div class="premium-vignette"></div>
-  <div class="premium-orbs" aria-hidden="true">
-    <span style="left:8%;animation-duration:18s;animation-delay:-2s;--drift:50px"></span>
-    <span style="left:16%;animation-duration:21s;animation-delay:-7s;--drift:-40px"></span>
-    <span style="left:28%;animation-duration:16s;animation-delay:-4s;--drift:60px"></span>
-    <span style="left:42%;animation-duration:24s;animation-delay:-12s;--drift:-55px"></span>
-    <span style="left:56%;animation-duration:17s;animation-delay:-3s;--drift:34px"></span>
-    <span style="left:68%;animation-duration:22s;animation-delay:-9s;--drift:-48px"></span>
-    <span style="left:82%;animation-duration:19s;animation-delay:-6s;--drift:44px"></span>
-    <span style="left:91%;animation-duration:26s;animation-delay:-14s;--drift:-38px"></span>
-  </div>
-
-  <div id="introOverlay" class="intro-overlay">
-    <div class="intro-card">
-      <span class="intro-kicker">Mobile Strategy Experience</span>
-      <h1 class="intro-title">CRIME<br>EMPIRE</h1>
-      <p class="intro-sub">Build your empire. Control the districts. Rise from street rookie to city legend.</p>
-      <button id="enterEmpire" class="intro-button">Enter The City</button>
-    </div>
-  </div>
-
-  <div id="floatLayer" class="float-layer"></div>
-  <div class="phone-shell">
-    <header class="top-hud"><div class="brand-block"><span class="eyebrow">Crime Empire</span><strong id="rankName">Rookie</strong></div><div class="header-actions"><button id="dailyButton" class="daily-chip">Daily</button></div></header>
-    <section class="resource-bar" aria-label="Resources"><div><span>Cash</span><strong id="cash">$0</strong></div><div><span>Power</span><strong id="power">0</strong></div><div><span>Energy</span><strong id="energy">10/10</strong></div><div><span>Heat</span><strong id="heat">0%</strong></div></section>
-    <main class="screen">
-      <section id="home" class="view active"><div class="city-card"><div class="city-skyline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="boss-panel"><div class="boss-avatar">Boss</div><div><p>Current Objective</p><h2 id="objectiveText">Collect your first $50</h2><small id="nextRank">Next rank loading...</small></div></div><div class="progress-strip"><div><span>Respect</span><strong id="respect">0</strong></div><div><span>Income</span><strong id="income">$0/s</strong></div><div><span>Districts</span><strong id="districtCount">0/15</strong></div></div></div><button id="tapButton" class="main-action-button">Collect Tribute</button><div class="quick-actions"><button id="boostButton">2x Boost</button><button id="fightButton">Rival</button><button id="layLowButton">Lay Low</button></div><section class="mission-card"><div><strong>Active Mission</strong><span id="missionText">Build your first front.</span></div><div class="mission-progress"><span id="missionBar"></span></div><button id="missionButton">Claim Reward</button></section><section class="chest-card"><div><strong>Reward Chest</strong><span id="chestText">Earn mission points to unlock a chest.</span></div><button id="chestButton">Open Chest</button></section><section class="event-card"><div><strong>Next Best Move</strong><span id="nextMoveText">Buy your first business, then hire crew for power.</span></div></section><section class="event-card"><div><strong>City Event</strong><span id="cityEvent">The city is quiet. Build your base.</span></div></section><p id="eventLog" class="event-log">Welcome to the city. Start small. Think bigger.</p></section>
-      <section id="arena" class="view"><div class="view-head"><h2>Arena</h2><span>Beat rival bosses</span></div><div class="arena-card"><div class="boss-face" id="bossFace">Boss</div><div><strong id="bossName">Street Captain</strong><span id="bossStats">Power 25 · Reward $500</span></div><div class="mission-progress"><span id="bossHpBar"></span></div><button id="bossAttackButton">Attack Boss</button></div><p id="battleLog" class="event-log">Build power, then challenge the boss.</p></section>
-      <section id="factions" class="view"><div class="view-head"><h2>Factions</h2><span>Control city influence</span></div><div id="factionList" class="card-list"></div></section>
-      <section id="jobs" class="view"><div class="view-head"><h2>Jobs</h2><span>Earn cash and respect</span></div><div id="jobsList" class="card-list"></div></section>
-      <section id="empire" class="view"><div class="view-head"><h2>Empire</h2><span>Businesses make money</span></div><div id="businesses" class="card-list"></div></section>
-      <section id="crewTab" class="view"><div class="view-head"><h2>Crew</h2><span>Power unlocks the city</span></div><div id="crew" class="crew-grid"></div></section>
-      <section id="map" class="view"><div class="view-head"><h2>City Map</h2><span>Take districts</span></div><div id="districts" class="district-grid"></div></section>
-      <section id="hq" class="view"><div class="view-head"><h2>HQ</h2><span>Permanent upgrades</span></div><div id="hqList" class="card-list"></div></section>
-      <section id="leaderboard" class="view"><div class="view-head"><h2>Leaderboard</h2><span>Local boss rankings</span></div><div id="leaderboardList" class="card-list"></div></section>
-      <section id="achievements" class="view"><div class="view-head"><h2>Achievements</h2><span>Unlock rewards</span></div><div id="achievementList" class="card-list"></div></section>
-      <section id="prestige" class="view"><div class="view-head"><h2>Prestige</h2><span>Rebuild stronger</span></div><div id="prestigePanel" class="card-list"></div></section>
-      <section id="cloud" class="view"><div class="view-head"><h2>Cloud</h2><span>Sync coming online</span></div><div id="cloudPanel" class="card-list"></div></section>
-    </main>
-    <nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="arena"><span>Fight</span>Arena</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="leaderboard"><span>Top</span>Board</button><button class="nav-button" data-tab="achievements"><span>Win</span>Goals</button><button class="nav-button" data-tab="prestige"><span>Reset</span>Prestige</button></nav>
-  </div>
-  <button id="moreButton" class="more-fab" aria-label="More tabs">More</button><button id="tutorialButton" class="help-fab" aria-label="How to play">?</button><button id="saveButton" class="save-fab" aria-label="Save progress">Save</button>
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close" aria-label="Close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
-  <script src="game.js"></script><script src="balance.js"></script><script src="factions.js"></script><script src="meta.js"></script>
-  <script>
-    const intro = document.getElementById('introOverlay');
-    const enter = document.getElementById('enterEmpire');
-    if(sessionStorage.getItem('crimeEmpireEntered')){
-      intro.classList.add('hidden');
-    }
-    enter?.addEventListener('click',()=>{
-      intro.classList.add('hidden');
-      sessionStorage.setItem('crimeEmpireEntered','1');
-      const toast=document.createElement('div');
-      toast.className='premium-toast';
-      toast.textContent='Welcome to the city, boss.';
-      document.body.appendChild(toast);
-      setTimeout(()=>toast.remove(),3000);
-    });
-
-    const tapButton=document.getElementById('tapButton');
-    tapButton?.addEventListener('click',()=>{
-      tapButton.classList.remove('premium-hit');
-      void tapButton.offsetWidth;
-      tapButton.classList.add('premium-hit');
-    });
-
-    document.querySelectorAll('.item-card,.resource-bar div,.district,.event-card,.mission-card,.chest-card').forEach(card=>{
-      card.addEventListener('mousemove',(e)=>{
-        const r=card.getBoundingClientRect();
-        card.style.setProperty('--mx',`${e.clientX-r.left}px`);
-        card.style.setProperty('--my',`${e.clientY-r.top}px`);
-      });
-    });
-
-    if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
-  </script>
+<div class="premium-vignette"></div>
+<div class="premium-orbs" aria-hidden="true">
+<span style="left:8%;animation-duration:18s;animation-delay:-2s;--drift:50px"></span>
+<span style="left:16%;animation-duration:21s;animation-delay:-7s;--drift:-40px"></span>
+<span style="left:28%;animation-duration:16s;animation-delay:-4s;--drift:60px"></span>
+<span style="left:42%;animation-duration:24s;animation-delay:-12s;--drift:-55px"></span>
+<span style="left:56%;animation-duration:17s;animation-delay:-3s;--drift:34px"></span>
+<span style="left:68%;animation-duration:22s;animation-delay:-9s;--drift:-48px"></span>
+<span style="left:82%;animation-duration:19s;animation-delay:-6s;--drift:44px"></span>
+<span style="left:91%;animation-duration:26s;animation-delay:-14s;--drift:-38px"></span>
+</div>
+<div id="introOverlay" class="intro-overlay"><div class="intro-card"><span class="intro-kicker">Mobile Strategy Experience</span><h1 class="intro-title">CRIME<br>EMPIRE</h1><p class="intro-sub">Build your empire. Control the districts. Rise from street rookie to city legend.</p><button id="enterEmpire" class="intro-button">Enter The City</button></div></div>
+<div id="floatLayer" class="float-layer"></div>
+<div class="phone-shell">
+<header class="top-hud"><div class="brand-block"><span class="eyebrow">Crime Empire</span><strong id="rankName">Rookie</strong></div><div class="header-actions"><button id="dailyButton" class="daily-chip">Daily</button></div></header>
+<section class="resource-bar" aria-label="Resources"><div><span>Cash</span><strong id="cash">$0</strong></div><div><span>Power</span><strong id="power">0</strong></div><div><span>Energy</span><strong id="energy">10/10</strong></div><div><span>Heat</span><strong id="heat">0%</strong></div></section>
+<main class="screen">
+<section id="home" class="view active"><div class="city-card"><div class="city-skyline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="boss-panel"><div class="boss-avatar">Boss</div><div><p>Current Objective</p><h2 id="objectiveText">Collect your first $50</h2><small id="nextRank">Next rank loading...</small></div></div><div class="progress-strip"><div><span>Respect</span><strong id="respect">0</strong></div><div><span>Income</span><strong id="income">$0/s</strong></div><div><span>Districts</span><strong id="districtCount">0/15</strong></div></div></div><button id="tapButton" class="main-action-button">Collect Tribute</button><div class="quick-actions"><button id="boostButton">2x Boost</button><button id="fightButton">Rival</button><button id="layLowButton">Lay Low</button></div></section>
+<section id="streetRun" class="view"><div class="view-head"><h2>Street Run</h2><span>Arcade escape mode</span></div><div class="arcade-wrap"><div class="arcade-panel"><div class="arcade-top"><div class="arcade-stat"><span>Score</span><strong id="arcadeScore">0</strong></div><div class="arcade-stat"><span>Time</span><strong id="arcadeTimer">60</strong></div><div class="arcade-stat"><span>Heat</span><strong id="arcadeHeat">0%</strong></div><div class="arcade-stat"><span>Best</span><strong id="arcadeBest">0</strong></div></div><div class="arcade-canvas-shell"><canvas id="streetRunCanvas"></canvas><div id="arcadeFlash" class="arcade-flash"></div><div id="arcadeReward" class="arcade-reward">+$10</div><div id="arcadeOverlay" class="arcade-overlay"><div class="arcade-card"><h3>Street Run</h3><p>Collect cash drops, dodge police heat, and survive the city run. Your score converts into empire money.</p><div id="arcadeResult">Move with arrows or touch controls.</div><div class="arcade-actions"><button id="startStreetRun" class="arcade-btn">Start Run</button><button id="retryStreetRun" class="arcade-btn secondary">Retry</button></div></div></div></div><div class="arcade-controls"><button id="moveLeft">◀ Move Left</button><button id="moveRight">Move Right ▶</button></div><div class="arcade-tip">This is the first live arcade mode. More missions, vehicles, weapons, and city systems are coming.</div></div></div></section>
+</main>
+<nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="streetRun"><span>Run</span>Arcade</button><button class="nav-button" data-tab="arena"><span>Fight</span>Arena</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="leaderboard"><span>Top</span>Board</button><button class="nav-button" data-tab="achievements"><span>Win</span>Goals</button><button class="nav-button" data-tab="prestige"><span>Reset</span>Prestige</button></nav>
+</div>
+<button id="moreButton" class="more-fab">More</button><button id="tutorialButton" class="help-fab">?</button><button id="saveButton" class="save-fab">Save</button>
+<script src="game.js"></script><script src="balance.js"></script><script src="factions.js"></script><script src="meta.js"></script><script src="arcade.js"></script>
+<script>
+const intro=document.getElementById('introOverlay');
+if(sessionStorage.getItem('crimeEmpireEntered')){intro.classList.add('hidden')}
+document.getElementById('enterEmpire')?.addEventListener('click',()=>{intro.classList.add('hidden');sessionStorage.setItem('crimeEmpireEntered','1')});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
 </body>
 </html>
