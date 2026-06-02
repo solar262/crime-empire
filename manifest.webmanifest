@@ -1,0 +1,11 @@
+{
+  "name": "Crime Empire",
+  "short_name": "CrimeEmpire",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#070911",
+  "theme_color": "#070911",
+  "description": "Build your fictional empire and dominate the city.",
+  "orientation": "portrait-primary",
+  "icons": []
+}
