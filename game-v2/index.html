@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
+  <title>Crime Empire V2</title>
+  <meta name="theme-color" content="#05070d" />
+  <link rel="stylesheet" href="./style.css?v=1" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game"></canvas>
+
+    <section id="start" class="start-screen">
+      <div class="start-card">
+        <h1>CRIME<br>EMPIRE</h1>
+        <button id="startBtn">Enter The City</button>
+        <p>Move with WASD or arrows. Press Space for action.</p>
+      </div>
+    </section>
+
+    <section class="hud">
+      <div class="topbar">
+        <div class="profile panel">
+          <div class="portrait"></div>
+          <div>
+            <h2>Rookie</h2>
+            <p>LVL 7 · 320 / 900 XP</p>
+            <span class="xp"><i></i></span>
+          </div>
+        </div>
+        <div class="stat panel"><span>Cash</span><b id="cash">$12,540</b></div>
+        <div class="stat panel"><span>Gold</span><b>125</b></div>
+        <div class="stat panel"><span>Energy</span><b>12/12</b></div>
+      </div>
+
+      <aside class="left-stack">
+        <div class="mission panel">
+          <span>Main Mission</span>
+          <h3>Take Over The Block</h3>
+          <p>Clear <b id="progress">0</b>/15 rivals and secure the district.</p>
+          <strong>Reward: $2,500</strong>
+        </div>
+        <nav class="menu panel">
+          <button>City</button><button>Arsenal</button><button>Empire</button><button>Upgrades</button>
+        </nav>
+      </aside>
+
+      <aside class="right-stack">
+        <div class="heat panel"><span>Heat Level</span><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><b>Wanted ★★★★★</b></div>
+        <canvas id="radar" class="radar panel" width="230" height="160"></canvas>
+      </aside>
+
+      <footer class="bottom-ui">
+        <div class="stick"><span></span></div>
+        <div class="cards">
+          <div class="panel card"><b>Health</b><em>100</em></div>
+          <div class="panel card"><b>Power</b><em>LVL 2</em></div>
+          <div class="panel card"><b>Armor</b><em>LVL 2</em></div>
+          <div class="panel card"><b>Income</b><em>LVL 4</em></div>
+        </div>
+        <div class="actions"><button id="dashBtn">Dash</button><button id="actBtn">Action</button></div>
+      </footer>
+    </section>
+  </div>
+
+  <script type="module" src="./main.js?v=1"></script>
+</body>
+</html>
