@@ -1,37 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Crime Empire</title>
-  <meta name="description" content="Crime Empire" />
-  <meta name="theme-color" content="#05070d" />
-  <link rel="stylesheet" href="neon-game.css?v=8" />
-  <link rel="stylesheet" href="cinematic.css?v=8" />
-  <style>
-    .engine-launch{position:fixed;inset:0;z-index:300;background:radial-gradient(circle at 50% 35%,rgba(255,211,90,.18),transparent 28rem),linear-gradient(135deg,#05070d,#0b1020 55%,#030409);display:grid;place-items:center;color:white;text-align:center;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',system-ui,sans-serif}.engine-launch h1{font-size:clamp(4.8rem,14vw,11rem);line-height:.78;margin:0 0 34px;background:linear-gradient(#fff7c9,#ffd35a 45%,#8b560e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 34px rgba(255,211,90,.24))}.engine-launch button{border:0;border-radius:999px;padding:20px 42px;background:linear-gradient(135deg,#ffd35a,#ff9f1c);color:#160d03;font-weight:1000;font-size:1.25rem;box-shadow:0 18px 60px rgba(255,159,28,.3);cursor:pointer}.engine-launch small{display:block;margin-top:18px;color:#8ea0bc;font:700 .9rem system-ui}.webgl-mode{position:fixed;inset:0;z-index:250;background:#05070d;display:none;overflow:hidden}.webgl-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.webgl-ui{position:absolute;inset:0;pointer-events:none;color:white;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',system-ui,sans-serif}.webgl-open{display:none}.webgl-close,.wg-play,.wg-actions button,.wg-side button,.wg-resources button{pointer-events:auto}.webgl-close{position:absolute;right:18px;top:18px;z-index:10;width:42px;height:42px;border-radius:50%;background:#111827;color:white;border:1px solid rgba(255,255,255,.2)}
-  </style>
+  <meta http-equiv="refresh" content="0; url=/game-v2/" />
+  <script>location.replace('/game-v2/');</script>
 </head>
-<body>
-  <div id="engineLaunch" class="engine-launch">
-    <div>
-      <h1>CRIME<br>EMPIRE</h1>
-      <button id="launchWebGL">Enter The City</button>
-      <small>WASD / Arrows move · Space action · Dash bursts</small>
-    </div>
-  </div>
-
-  <script type="module" src="webgl-city.js?v=10"></script>
-  <script>
-    document.getElementById('launchWebGL').addEventListener('click', () => {
-      const btn = document.querySelector('.webgl-open');
-      if (btn) {
-        document.getElementById('engineLaunch').style.display = 'none';
-        btn.click();
-      } else {
-        setTimeout(() => document.querySelector('.webgl-open')?.click(), 600);
-      }
-    });
-  </script>
+<body style="margin:0;background:#05070d;color:white;font-family:system-ui;display:grid;place-items:center;height:100vh">
+  <main style="text-align:center">
+    <h1>Crime Empire</h1>
+    <p>Loading city...</p>
+    <p><a style="color:#ffd35a" href="/game-v2/">Enter The City</a></p>
+  </main>
 </body>
 </html>
