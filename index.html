@@ -13,8 +13,30 @@
   <meta property="og:type" content="website" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="premium.css" />
 </head>
 <body>
+  <div class="premium-vignette"></div>
+  <div class="premium-orbs" aria-hidden="true">
+    <span style="left:8%;animation-duration:18s;animation-delay:-2s;--drift:50px"></span>
+    <span style="left:16%;animation-duration:21s;animation-delay:-7s;--drift:-40px"></span>
+    <span style="left:28%;animation-duration:16s;animation-delay:-4s;--drift:60px"></span>
+    <span style="left:42%;animation-duration:24s;animation-delay:-12s;--drift:-55px"></span>
+    <span style="left:56%;animation-duration:17s;animation-delay:-3s;--drift:34px"></span>
+    <span style="left:68%;animation-duration:22s;animation-delay:-9s;--drift:-48px"></span>
+    <span style="left:82%;animation-duration:19s;animation-delay:-6s;--drift:44px"></span>
+    <span style="left:91%;animation-duration:26s;animation-delay:-14s;--drift:-38px"></span>
+  </div>
+
+  <div id="introOverlay" class="intro-overlay">
+    <div class="intro-card">
+      <span class="intro-kicker">Mobile Strategy Experience</span>
+      <h1 class="intro-title">CRIME<br>EMPIRE</h1>
+      <p class="intro-sub">Build your empire. Control the districts. Rise from street rookie to city legend.</p>
+      <button id="enterEmpire" class="intro-button">Enter The City</button>
+    </div>
+  </div>
+
   <div id="floatLayer" class="float-layer"></div>
   <div class="phone-shell">
     <header class="top-hud"><div class="brand-block"><span class="eyebrow">Crime Empire</span><strong id="rankName">Rookie</strong></div><div class="header-actions"><button id="dailyButton" class="daily-chip">Daily</button></div></header>
@@ -38,6 +60,38 @@
   <button id="moreButton" class="more-fab" aria-label="More tabs">More</button><button id="tutorialButton" class="help-fab" aria-label="How to play">?</button><button id="saveButton" class="save-fab" aria-label="Save progress">Save</button>
   <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close" aria-label="Close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
   <script src="game.js"></script><script src="balance.js"></script><script src="factions.js"></script><script src="meta.js"></script>
-  <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+  <script>
+    const intro = document.getElementById('introOverlay');
+    const enter = document.getElementById('enterEmpire');
+    if(sessionStorage.getItem('crimeEmpireEntered')){
+      intro.classList.add('hidden');
+    }
+    enter?.addEventListener('click',()=>{
+      intro.classList.add('hidden');
+      sessionStorage.setItem('crimeEmpireEntered','1');
+      const toast=document.createElement('div');
+      toast.className='premium-toast';
+      toast.textContent='Welcome to the city, boss.';
+      document.body.appendChild(toast);
+      setTimeout(()=>toast.remove(),3000);
+    });
+
+    const tapButton=document.getElementById('tapButton');
+    tapButton?.addEventListener('click',()=>{
+      tapButton.classList.remove('premium-hit');
+      void tapButton.offsetWidth;
+      tapButton.classList.add('premium-hit');
+    });
+
+    document.querySelectorAll('.item-card,.resource-bar div,.district,.event-card,.mission-card,.chest-card').forEach(card=>{
+      card.addEventListener('mousemove',(e)=>{
+        const r=card.getBoundingClientRect();
+        card.style.setProperty('--mx',`${e.clientX-r.left}px`);
+        card.style.setProperty('--my',`${e.clientY-r.top}px`);
+      });
+    });
+
+    if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+  </script>
 </body>
 </html>
