@@ -2,19 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Crime Empire</title>
-  <meta name="description" content="A mobile-first idle strategy empire game." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+  <title>Crime Empire — Idle Strategy Game</title>
+  <meta name="description" content="Build your fictional empire, recruit crew, take districts, fight rival bosses, and climb from rookie to city legend in this mobile and desktop idle strategy game." />
+  <meta name="theme-color" content="#070911" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:title" content="Crime Empire" />
+  <meta property="og:description" content="Build your empire. Control the city. Become the boss." />
+  <meta property="og:type" content="website" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="floatLayer" class="float-layer"></div>
   <div class="phone-shell">
-    <header class="top-hud"><div class="brand-block"><span class="eyebrow">Crime Empire</span><strong id="rankName">Rookie</strong></div><button id="dailyButton" class="daily-chip">Daily</button></header>
-    <section class="resource-bar"><div><span>Cash</span><strong id="cash">$0</strong></div><div><span>Power</span><strong id="power">0</strong></div><div><span>Energy</span><strong id="energy">10/10</strong></div><div><span>Heat</span><strong id="heat">0%</strong></div></section>
+    <header class="top-hud">
+      <div class="brand-block">
+        <span class="eyebrow">Crime Empire</span>
+        <strong id="rankName">Rookie</strong>
+      </div>
+      <div class="header-actions">
+        <button id="dailyButton" class="daily-chip">Daily</button>
+      </div>
+    </header>
+
+    <section class="resource-bar" aria-label="Resources">
+      <div><span>Cash</span><strong id="cash">$0</strong></div>
+      <div><span>Power</span><strong id="power">0</strong></div>
+      <div><span>Energy</span><strong id="energy">10/10</strong></div>
+      <div><span>Heat</span><strong id="heat">0%</strong></div>
+    </section>
+
     <main class="screen">
       <section id="home" class="view active">
-        <div class="city-card"><div class="city-skyline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="boss-panel"><div class="boss-avatar">Boss</div><div><p>Current Objective</p><h2 id="objectiveText">Collect your first $50</h2><small id="nextRank">Next rank loading...</small></div></div><div class="progress-strip"><div><span>Respect</span><strong id="respect">0</strong></div><div><span>Income</span><strong id="income">$0/s</strong></div><div><span>Districts</span><strong id="districtCount">0/15</strong></div></div></div>
+        <div class="city-card">
+          <div class="city-skyline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="boss-panel"><div class="boss-avatar">Boss</div><div><p>Current Objective</p><h2 id="objectiveText">Collect your first $50</h2><small id="nextRank">Next rank loading...</small></div></div>
+          <div class="progress-strip"><div><span>Respect</span><strong id="respect">0</strong></div><div><span>Income</span><strong id="income">$0/s</strong></div><div><span>Districts</span><strong id="districtCount">0/15</strong></div></div>
+        </div>
         <button id="tapButton" class="main-action-button">Collect Tribute</button>
         <div class="quick-actions"><button id="boostButton">2x Boost</button><button id="fightButton">Rival</button><button id="layLowButton">Lay Low</button></div>
         <section class="mission-card"><div><strong>Active Mission</strong><span id="missionText">Build your first front.</span></div><div class="mission-progress"><span id="missionBar"></span></div><button id="missionButton">Claim Reward</button></section>
@@ -31,12 +57,18 @@
       <section id="map" class="view"><div class="view-head"><h2>City Map</h2><span>Take districts</span></div><div id="districts" class="district-grid"></div></section>
       <section id="hq" class="view"><div class="view-head"><h2>HQ</h2><span>Permanent upgrades</span></div><div id="hqList" class="card-list"></div></section>
     </main>
+
     <nav class="bottom-nav" aria-label="Main navigation"><button class="nav-button active" data-tab="home"><span>City</span>Home</button><button class="nav-button" data-tab="arena"><span>Fight</span>Arena</button><button class="nav-button" data-tab="factions"><span>War</span>Factions</button><button class="nav-button" data-tab="jobs"><span>Job</span>Jobs</button><button class="nav-button" data-tab="empire"><span>Biz</span>Empire</button><button class="nav-button" data-tab="crewTab"><span>Crew</span>Crew</button><button class="nav-button" data-tab="map"><span>Map</span>Map</button><button class="nav-button" data-tab="hq"><span>HQ</span>HQ</button></nav>
   </div>
-  <button id="tutorialButton" class="help-fab">?</button><button id="saveButton" class="save-fab">Save</button>
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
+  <button id="tutorialButton" class="help-fab" aria-label="How to play">?</button><button id="saveButton" class="save-fab" aria-label="Save progress">Save</button>
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><button id="closeModal" class="modal-close" aria-label="Close">×</button><h2 id="modalTitle">How to Play</h2><div id="modalBody"></div><button id="resetButton" class="reset-button">Reset progress</button></div></div>
   <script src="game.js"></script>
   <script src="balance.js"></script>
   <script src="factions.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
 </body>
 </html>
