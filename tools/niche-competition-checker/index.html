@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Niche Competition Checker — MarketVibe</title>
+  <meta name="description" content="Check niche competition, demand, monetization potential, and launch difficulty with the free MarketVibe Niche Competition Checker." />
+  <link rel="canonical" href="https://marketvibe1.com/tools/niche-competition-checker/" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="stylesheet" href="/assets/app.css?v=2" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"MarketVibe Niche Competition Checker","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://marketvibe1.com/tools/niche-competition-checker/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="/">Market<span>Vibe</span></a>
+  <nav><a href="/#scanner">Scanner</a><a href="/#tools">Tools</a><a href="/products/">Products</a></nav>
+  <a class="header-cta" href="/#scanner">Find My Niche</a>
+</header>
+
+<main class="tool-page">
+  <section class="hero-mini">
+    <p class="eyebrow">Free business tool</p>
+    <h1>Niche Competition Checker</h1>
+    <p class="lead">Score a niche before you build. Estimate demand, competition, monetization potential, buyer intent, and the fastest launch angle.</p>
+  </section>
+
+  <section class="scanner-grid">
+    <form id="nicheForm" class="scanner-form">
+      <label>Niche or idea<input id="niche" required placeholder="Example: AI tools for real estate agents" /></label>
+      <label>Target market<input id="market" placeholder="US, UK, local city, global, creators, small business" /></label>
+      <label>Main channel<select id="channel"><option>Google search</option><option>Reddit / forums</option><option>Gumroad / marketplace</option><option>Local outreach</option><option>YouTube / short video</option><option>Email / B2B outbound</option></select></label>
+      <label>Product type<select id="productType"><option>Digital product</option><option>Service</option><option>Affiliate content</option><option>Software tool</option><option>Local lead generation</option></select></label>
+      <label>Experience level<select id="experience"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label>
+      <button type="submit">Check Competition</button>
+    </form>
+
+    <div id="nicheResults" class="results-panel">
+      <h3>Your niche score will appear here</h3>
+      <p>Enter a niche to get a competition score, demand score, monetization route, SEO angles, and a simple launch recommendation.</p>
+    </div>
+  </section>
+
+  <section class="tool-grid-section">
+    <div class="section-head"><p class="eyebrow">Recommended next step</p><h2>Turn the score into an offer</h2><p>Once a niche has a strong opportunity score, use a product or outreach system to test demand quickly.</p></div>
+    <div class="tool-grid">
+      <article><h3>Local Lead Opportunity Finder</h3><p>Best if your niche is local services, agencies, trades, or small business lead generation.</p><a href="https://283733832600.gumroad.com/l/tqopbi" rel="sponsored nofollow">View on Gumroad</a></article>
+      <article><h3>AI Outreach Studio Pro</h3><p>Best if your niche needs outbound, cold email, lead lists, or B2B selling.</p><a href="https://283733832600.gumroad.com/l/outreach-studio-pro" rel="sponsored nofollow">View on Gumroad</a></article>
+      <article><h3>Solopreneur Declutter Toolkit</h3><p>Best if your niche targets creators, operators, productivity, or digital organization.</p><a href="https://283733832600.gumroad.com/l/xhmknr" rel="sponsored nofollow">View on Gumroad</a></article>
+    </div>
+  </section>
+</main>
+
+<footer><strong>MarketVibe</strong><span>AI business intelligence platform.</span><a href="/products/">Product marketplace</a></footer>
+
+<script>
+const form=document.getElementById('nicheForm');
+const out=document.getElementById('nicheResults');
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function scoreText(score){if(score>=80)return 'Strong opportunity'; if(score>=65)return 'Promising but needs positioning'; if(score>=50)return 'Moderate opportunity'; return 'High friction niche';}
+function channelBonus(channel){return {'Google search':8,'Reddit / forums':6,'Gumroad / marketplace':5,'Local outreach':9,'YouTube / short video':4,'Email / B2B outbound':8}[channel]||5;}
+function typeBonus(type){return {'Digital product':7,'Service':9,'Affiliate content':6,'Software tool':5,'Local lead generation':9}[type]||6;}
+function keywords(niche){const base=niche.toLowerCase().replace(/[^a-z0-9 ]/g,'').trim()||'online business';return [`best ${base} tools`,`${base} ideas`,`${base} for beginners`,`${base} checklist`,`how to start ${base}`,`${base} templates`,`${base} software`,`${base} examples`];}
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const niche=document.getElementById('niche').value.trim();
+  const market=document.getElementById('market').value.trim()||'global market';
+  const channel=document.getElementById('channel').value;
+  const type=document.getElementById('productType').value;
+  const exp=document.getElementById('experience').value;
+  const words=niche.split(/\s+/).filter(Boolean).length;
+  const specificity=clamp(45+(words*6),45,82);
+  const demand=clamp(58+channelBonus(channel)+typeBonus(type)+(niche.match(/ai|lead|business|money|tool|local|seo|automation/i)?10:0),40,96);
+  const competition=clamp(72-specificity+(niche.match(/ai|fitness|crypto|marketing/i)?12:0),18,88);
+  const monetization=clamp(55+typeBonus(type)*3+(channel.includes('outbound')?8:0),45,95);
+  const difficulty=clamp(competition+(exp==='beginner'?12:exp==='intermediate'?5:-4),20,95);
+  const opportunity=clamp(Math.round((demand*0.38)+(monetization*0.32)+((100-difficulty)*0.3)),20,98);
+  const kw=keywords(niche);
+  const recommendation=opportunity>=75?'Build a landing page and test paid demand this week.':opportunity>=60?'Narrow the niche and validate with one free tool or checklist.':'Pick a more specific buyer segment before building.';
+  out.innerHTML=`<h3>${scoreText(opportunity)}</h3><p><strong>${niche}</strong> in ${market}</p><div class="result-card"><div class="result-top"><h4>Opportunity Score</h4><div class="score">${opportunity}/100</div></div><span class="pill">Demand ${demand}/100</span><span class="pill">Competition ${competition}/100</span><span class="pill">Monetization ${monetization}/100</span><span class="pill">Difficulty ${difficulty}/100</span></div><div class="result-card"><h4>Best monetization route</h4><p>${type} through ${channel}. Start with a narrow offer, collect emails, then sell a low-ticket product or service package.</p></div><div class="result-card"><h4>Recommended launch angle</h4><p>${recommendation}</p><ol class="plan"><li>Create a one-page offer for this niche.</li><li>Publish one free checklist/tool as the lead magnet.</li><li>Send visitors to a Gumroad product or paid report CTA.</li><li>Track clicks, email signups, and buyer intent keywords.</li></ol></div><div class="result-card"><h4>SEO/AEO keyword angles</h4>${kw.map(k=>`<span class="pill">${k}</span>`).join('')}</div><div class="result-card"><h4>Suggested paid CTA</h4><p>Use the product that matches this niche: local lead finder for local/service niches, outreach studio for B2B, or product toolkit for creator/digital product niches.</p><a class="primary" href="/products/">View Product Stack</a></div>`;
+});
+</script>
+</body>
+</html>
