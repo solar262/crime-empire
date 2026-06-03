@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Product Profit Calculator — MarketVibe</title>
+  <meta name="description" content="Estimate digital product revenue, platform fees, refunds, net profit, and break-even traffic with the free MarketVibe Digital Product Profit Calculator." />
+  <link rel="canonical" href="https://marketvibe1.com/tools/digital-product-profit-calculator/" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="stylesheet" href="/assets/app.css?v=2" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"MarketVibe Digital Product Profit Calculator","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://marketvibe1.com/tools/digital-product-profit-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="/">Market<span>Vibe</span></a>
+  <nav><a href="/#scanner">Scanner</a><a href="/#tools">Tools</a><a href="/products/">Products</a></nav>
+  <a class="header-cta" href="/#scanner">Find My Niche</a>
+</header>
+
+<main class="tool-page">
+  <section class="hero-mini">
+    <p class="eyebrow">Free calculator</p>
+    <h1>Digital Product Profit Calculator</h1>
+    <p class="lead">Estimate monthly revenue, refunds, platform fees, net profit, and break-even traffic before you launch a Gumroad product, template pack, checklist, or paid report.</p>
+  </section>
+
+  <section class="scanner-grid">
+    <form id="profitForm" class="scanner-form">
+      <label>Product price ($)<input id="price" type="number" min="1" step="1" value="19" required /></label>
+      <label>Monthly visitors<input id="traffic" type="number" min="0" step="10" value="1000" required /></label>
+      <label>Conversion rate (%)<input id="conversion" type="number" min="0" max="100" step="0.1" value="2" required /></label>
+      <label>Refund rate (%)<input id="refund" type="number" min="0" max="100" step="0.1" value="5" required /></label>
+      <label>Platform + payment fees (%)<input id="fees" type="number" min="0" max="100" step="0.1" value="10" required /></label>
+      <label>Monthly fixed costs ($)<input id="costs" type="number" min="0" step="1" value="25" required /></label>
+      <button type="submit">Calculate Profit</button>
+    </form>
+
+    <div id="profitResults" class="results-panel">
+      <h3>Your profit forecast will appear here</h3>
+      <p>Enter your expected price, traffic, conversion rate, refunds, fees, and fixed costs to estimate whether your digital product can make money.</p>
+    </div>
+  </section>
+
+  <section class="tool-grid-section">
+    <div class="section-head"><p class="eyebrow">Recommended products</p><h2>Use a product stack to launch faster</h2><p>Use existing Gumroad assets and MarketVibe tools to test demand before building a big product.</p></div>
+    <div class="tool-grid">
+      <article><h3>AI Outreach Studio Pro</h3><p>Use outreach workflows to get early buyers before relying on SEO traffic.</p><a href="https://283733832600.gumroad.com/l/outreach-studio-pro" rel="sponsored nofollow">View on Gumroad</a></article>
+      <article><h3>Local Lead Opportunity Finder</h3><p>Useful when your product is built around local business demand or B2B services.</p><a href="https://283733832600.gumroad.com/l/tqopbi" rel="sponsored nofollow">View on Gumroad</a></article>
+      <article><h3>Solopreneur Declutter Toolkit</h3><p>Good example of a simple, low-ticket digital toolkit offer.</p><a href="https://283733832600.gumroad.com/l/xhmknr" rel="sponsored nofollow">View on Gumroad</a></article>
+    </div>
+  </section>
+</main>
+
+<footer><strong>MarketVibe</strong><span>AI business intelligence platform.</span><a href="/products/">Product marketplace</a></footer>
+
+<script>
+const form=document.getElementById('profitForm');
+const out=document.getElementById('profitResults');
+function money(n){return '$'+Math.round(n).toLocaleString();}
+function pct(n){return Math.round(n*10)/10+'%';}
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const price=Number(document.getElementById('price').value)||0;
+  const traffic=Number(document.getElementById('traffic').value)||0;
+  const conversion=(Number(document.getElementById('conversion').value)||0)/100;
+  const refund=(Number(document.getElementById('refund').value)||0)/100;
+  const fees=(Number(document.getElementById('fees').value)||0)/100;
+  const costs=Number(document.getElementById('costs').value)||0;
+  const grossSales=traffic*conversion;
+  const refunds=grossSales*refund;
+  const netSales=Math.max(0,grossSales-refunds);
+  const grossRevenue=grossSales*price;
+  const refundLoss=refunds*price;
+  const revenueAfterRefunds=netSales*price;
+  const feeCost=revenueAfterRefunds*fees;
+  const netProfit=revenueAfterRefunds-feeCost-costs;
+  const breakEvenSales=price>0 ? Math.ceil(costs/(price*(1-fees)*(1-refund)||1)) : 0;
+  const breakEvenTraffic=conversion>0 ? Math.ceil(breakEvenSales/conversion) : 0;
+  const improvedConversion=traffic*(conversion+.01)*price*(1-refund)*(1-fees)-costs;
+  const verdict=netProfit>1000?'Strong profit potential':netProfit>200?'Promising small product':netProfit>0?'Break-even validation stage':'Needs better traffic, price, or conversion';
+  out.innerHTML=`<h3>${verdict}</h3><div class="result-card"><div class="result-top"><h4>Estimated Monthly Net Profit</h4><div class="score">${money(netProfit)}</div></div><span class="pill">${Math.round(grossSales)} orders</span><span class="pill">${money(grossRevenue)} gross</span><span class="pill">${money(feeCost)} fees</span><span class="pill">${money(refundLoss)} refunds</span></div><div class="result-card"><h4>Break-even estimate</h4><p>You need about <strong>${breakEvenSales}</strong> paid sales or <strong>${breakEvenTraffic.toLocaleString()}</strong> visitors/month at ${pct(conversion*100)} conversion to cover ${money(costs)} fixed costs.</p></div><div class="result-card"><h4>Improvement suggestions</h4><ol class="plan"><li>Raise perceived value with bonuses, templates, examples, or a checklist.</li><li>Add email capture before checkout to recover visitors who are not ready to buy.</li><li>Test a stronger landing page headline and compare conversion rate against ${pct(conversion*100)}.</li><li>If conversion improves by 1 percentage point, estimated profit becomes <strong>${money(improvedConversion)}</strong>.</li></ol></div><div class="result-card"><h4>Next step</h4><p>Use MarketVibe to find a niche, validate competition, then send buyers to a matching Gumroad product or paid report.</p><a class="primary" href="/products/">View Product Stack</a></div>`;
+});
+</script>
+</body>
+</html>
